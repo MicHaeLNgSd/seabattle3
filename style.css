@@ -1,0 +1,151 @@
+*{
+    box-sizing: border-box;
+}
+
+.user-grid,.computer-grid{
+    border: 1px solid lightcyan;
+}
+
+section{
+    background-color:bisque;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    background-color: aquamarine;
+    height: max-content;
+}
+
+.container-g{
+    display: flex;
+    flex-direction: row;
+    background-color: aquamarine;
+    height: max-content;
+    margin: 30px;
+}
+
+.user-grid,.computer-grid{
+    background-color: plum;
+    height: 300px;
+    width: 300px;
+}
+.user-ships,.computer-ships{
+    background-color: plum;
+    height: max-content;
+    max-height: 300px;
+    width: 300px;
+}
+
+.square{
+    height: 10%;
+    width: 10%;
+    background-color: skyblue;
+    border: 1px solid lightcyan; 
+    float: left;
+}
+/* .square:hover{
+    background-color: gray;
+} */
+
+.ship-section{
+    background-color: pink;
+    display: flex;
+}
+.ship-section > .ship{
+    margin: 15px 0 0 15px;
+}
+
+.ship{
+    display: flex;
+    /* margin: 30px 0 0 30px; */
+    height: 30px;
+    width: max-content;
+    position: relative;
+    border: 1px solid dimgray;
+}
+
+
+
+.square > .ship{
+    box-sizing: content-box;
+    margin: -2px;
+}
+
+.button-section{
+    background-color:burlywood;
+    width: 100%;
+    max-width: 1000px;
+    justify-content: space-evenly;
+}
+
+
+.little{
+    transform-origin: center left;
+    transform: scale(0.5);
+    float: left;
+}
+
+.ship-active{
+    opacity: 0.5;
+}
+
+.ship-checker{
+    opacity: 0.6;
+}
+
+.ss,.ess{
+    height: 100%;
+    width: 30px;
+    background-color: silver;
+    border: 1px solid dimgray;
+}
+
+.dead{
+    background-color: red;
+}
+
+.taken{
+    /* background-color: palegreen; */
+}
+
+/* .takenByShip{background-color: orange;} */
+
+.takenByShip{
+    box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: silver;
+    position: relative;
+}
+
+button:hover { 
+    background: skyblue;
+}
+
+.unselectable {
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.boom{
+    box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: palevioletred;
+    position: relative;
+}
+.miss{
+    background-color: cornflowerblue;
+}
