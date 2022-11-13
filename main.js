@@ -14,7 +14,7 @@ let isPlayer1 = true;
 const turnDisplay = document.querySelector('#whose-go')
 
 const startG = document.querySelector("#playGame");
-startG.addEventListener("click", playGame);
+startG.addEventListener("click", playGameBtn);
 
 const randForMe = document.querySelector("#randForMe");
 randForMe.addEventListener("click", () => createShips(userSquares));
@@ -152,6 +152,8 @@ function generate(GridSquares, shipId) {
     squares.forEach( square =>{
       square.classList.remove('taken')
       square.classList.remove('takenByShip')
+      square.classList.remove('boom')
+      square.classList.remove('miss')
     })
     removeShipChecker(squares);
     // if(squares === userSquares){
@@ -202,64 +204,73 @@ function removeShipChecker(squares){
 }
 
 
+function playGameBtn() {
+  turnDisplay.innerHTML = 'Your Go';
+  computerSquares.forEach(square => square.addEventListener('click', function(e) {
+    playerGo(square);
+  }))
+}
+
 function playGame() {
-    //if (isGameOver) return
-    if (isPlayer1 === true) {
-      turnDisplay.innerHTML = 'Your Go';
-      computerSquares.forEach(square => square.addEventListener('click', function(e) {
-        playerGo();
-      }))
-    }
-    if (isPlayer1 === false) {
-      turnDisplay.innerHTML = 'Computers Go';
-      computerGo();
-      //setTimeout(computerGo, 1000)
-    }
+//if (isGameOver) return
+if (isPlayer1 === true) {
+turnDisplay.innerHTML = 'Your Go';
+}
+if (isPlayer1 === false) {
+turnDisplay.innerHTML = 'Computers Go';
+//computerGo();
+setTimeout(computerGo, 1000)
+}
 }
 
 function playerGo(square){
-    isPlayer1 = false;
-    // if(square.classList.contains('boom'))
-    // { 
-    //     playGame(); 
-    //     return;
-    // }
-    // else {
-    //     if (square.classList.contains('takenByShip')) {
-    //         square.classList.add('boom')
-    //     } else {
-    //         square.classList.add('miss')
-    //     }
-    //     //checkForWins()
-    // }
-    console.log("playerGo");
-    playGame();
+
+if(square.classList.contains('boom'))
+{ 
+    playGame(); 
     return;
+}
+else {
+    if (square.classList.contains('takenByShip')) {
+        square.classList.add('boom')
+    } else {
+        square.classList.add('miss')
+    }
+    //checkForWins()
+}
+console.log("playerGo");
+isPlayer1 = false;
+playGame();
+
 }
 
 function computerGo(){
-    isPlayer1 = true;
-    // let random = Math.floor(Math.random() * userSquares.length)
-    // console.log("random",random);
-    // // if(userSquares[random].classList.contains('boom'))
-    // // { 
-    // //     console.log("userSquares[random] ", userSquares[random]);
-    // //     playGame();
-    // //     console.log("playGame");
-    // //     return;
-    // // } 
-    // //else 
-    // //if(!userSquares[random].classList.contains('boom')){
-
-    //     console.log("userSquares[random] ", userSquares[random]);
-    //     if (userSquares[random].classList.contains('takenByShip')) {
-    //         userSquares[random].classList.add('boom')
-    //     } else {
-    //         userSquares[random].classList.add('miss')
-    //     }
-    //     //checkForWins()
-    // //}
-    console.log("computerGo");
+isPlayer1 = true;
+console.log("computerGo");
+let random = Math.floor(Math.random() * userSquares.length)
+console.log("random",random);
+if(userSquares[random].classList.contains('boom'))
+{ 
+    console.log("userSquares[random] ", userSquares[random]);
     playGame();
+    console.log("playGame");
     return;
+} 
+else 
+if(!userSquares[random].classList.contains('boom')){
+
+    console.log("userSquares[random] ", userSquares[random]);
+    if (userSquares[random].classList.contains('takenByShip')) {
+        userSquares[random].classList.add('boom')
+    } else {
+        userSquares[random].classList.add('miss')
+    }
+    //checkForWins()
+}
+// setTimeout(()=>{
+//   console.log("computerGo");
+//   playGame();
+// }, 1000);
+
+
 }
