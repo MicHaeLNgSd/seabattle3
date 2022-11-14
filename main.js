@@ -213,64 +213,105 @@ function playGameBtn() {
 
 function playGame() {
 //if (isGameOver) return
-if (isPlayer1 === true) {
-turnDisplay.innerHTML = 'Your Go';
-}
-if (isPlayer1 === false) {
-turnDisplay.innerHTML = 'Computers Go';
-//computerGo();
-setTimeout(computerGo, 1000)
-}
+  if (isPlayer1 === true) {
+  turnDisplay.innerHTML = 'Your Go';
+  }
+  if (isPlayer1 === false) {
+  turnDisplay.innerHTML = 'Computers Go';
+  //computerGo();
+  setTimeout(computerGo, 1000)
+  }
 }
 
 function playerGo(square){
-
-if(square.classList.contains('boom'))
-{ 
-    playGame(); 
-    return;
-}
-else {
-    if (square.classList.contains('takenByShip')) {
-        square.classList.add('boom')
-    } else {
-        square.classList.add('miss')
-    }
-    //checkForWins()
-}
-console.log("playerGo");
-isPlayer1 = false;
-playGame();
-
+  if(square.classList.contains('boom') || square.classList.contains('miss'))
+  { 
+    return
+      //playGame(); 
+  }
+  else {
+      if (square.classList.contains('takenByShip')) {
+          square.classList.add('boom')
+          return 
+      } else {
+          square.classList.add('miss')
+      }
+      //checkForWins()
+  }
+  console.log("playerGo");
+  isPlayer1 = false;
+  playGame();
 }
 
 function computerGo(){
-isPlayer1 = true;
-console.log("computerGo");
-let random = Math.floor(Math.random() * userSquares.length)
-console.log("random",random);
-if(userSquares[random].classList.contains('boom'))
-{ 
-    console.log("userSquares[random] ", userSquares[random]);
-    playGame();
-    console.log("playGame");
-    return;
-} 
-else 
-if(!userSquares[random].classList.contains('boom')){
+  let random = Math.floor(Math.random() * userSquares.length);
+  console.log("random",random);
 
-    console.log("userSquares[random] ", userSquares[random]);
-    if (userSquares[random].classList.contains('takenByShip')) {
-        userSquares[random].classList.add('boom')
-    } else {
-        userSquares[random].classList.add('miss')
-    }
-    //checkForWins()
+  if(userSquares[random].classList.contains('boom') || userSquares[random].classList.contains('miss'))
+  { 
+    computerGo();
+  } 
+  else{
+      if (userSquares[random].classList.contains('takenByShip')) {
+          userSquares[random].classList.add('boom')
+          setTimeout(computerGo, 1000)
+          //setTimeout(computerAI(random), 1000)
+      } else {
+          userSquares[random].classList.add('miss')
+      }
+      //checkForWins()
+  }
+  console.log("computerGo");
+  isPlayer1 = true;
+  playGame()
 }
-// setTimeout(()=>{
-//   console.log("computerGo");
+
+// function computerAI(random){
+//   let wrongDir
+//   if(random < 10){
+//     wrongDir = 0
+//   }
+//   if(random >= 90){
+//     wrongDir = 1
+//   }
+//   if(random % 10 < 1){
+//     wrongDir = 2
+//   }
+//   if(random % 10 > 8){
+//     wrongDir = 3
+//   }
+
+//   let nearRandom = Math.floor(Math.random() * 2);
+//   if (nearRandom === wrongDir){computerAI(random)};
+
+//   switch (nearRandom){
+//     case 0:
+//       nearRandom = -10
+//       break;
+//     case 1:
+//       nearRandom = 1
+//       break;
+//     case 2:
+//       nearRandom = 10
+//       break;
+//     case 3:
+//       nearRandom = -1
+//       break;
+//   }
+
+//   if(userSquares[random + nearRandom].classList.contains('boom'))
+//   { 
+//       computerAI(random)
+//   } 
+//   else{
+//       if (userSquares[random + nearRandom].classList.contains('takenByShip')) {
+//           userSquares[random + nearRandom].classList.add('boom')
+//           setTimeout(computerAI(random + nearRandom), 1000)
+//       } else {
+//           userSquares[random + nearRandom].classList.add('miss')
+//       }
+//       //checkForWins()
+//   }
+//   isPlayer1 = true;
 //   playGame();
-// }, 1000);
-
-
-}
+// }
