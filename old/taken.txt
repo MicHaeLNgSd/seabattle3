@@ -1,0 +1,79 @@
+function generate(GridSquares, shipId) {
+    //let randomDirection = Math.round(Math.random())
+    let randomDirection = 0
+    let shipById = document.querySelector(`[id="${shipId}"]`)
+    let randomStart = Math.abs(Math.floor(Math.random() * GridSquares.length));
+    //let randomStart = 99
+
+    if (randomDirection === 0) {
+        let shipStartY = Math.floor(randomStart / 10)
+        let shipEndY = Math.floor((randomStart + shipById.childElementCount - 1) / 10)
+
+        for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) { // проверить не мешают ли ему корабли на другом У
+            if (GridSquares[i].classList.contains("taken") || shipStartY != shipEndY || randomStart + shipById.childElementCount > GridSquares.length - 1) {
+                generate(GridSquares, shipId)
+                return
+            }
+        }
+
+        // for (let i = -1; i <= 1; i++) {
+        //     if ((randomStart + i * 10) < 0 || (randomStart + i * 10) > 99) {
+        //         continue;
+        //     }
+
+        //     for (let j = randomStart + i * 10 - 1; j < (randomStart + i * 10 + shipById.childElementCount + 1); j++) {
+
+        //         if (j < (shipStartY + i) * 10 || j > (shipStartY + i) * 10 + 9) {
+        //             continue;
+        //         }
+        //         GridSquares[j].classList.add('taken');
+        //     }
+        // }
+
+        for (let i = -10; i <= 10; i += 10) {
+            if ((randomStart + i) < 0 || (randomStart + i) > 99) {
+                continue;
+            }
+
+            for (let j = randomStart + i - 1; j < (randomStart + i + shipById.childElementCount + 1); j++) {
+
+                if (j < shipStartY * 10 + i || j > shipStartY * 10 + i + 9) {
+                    continue;
+                }
+                GridSquares[j].classList.add('taken');
+            }
+        }
+
+        for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) {
+            GridSquares[i].classList.add('takenByShip');
+        }
+    }
+    else if (randomDirection === 1) {
+        console.log("rotated", shipId)
+        let shipStartX = randomStart % 10
+        for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) { // проверить не мешают ли ему корабли на другом У
+            if (GridSquares[i * 10].classList.contains("taken") || randomStart + shipById.childElementCount * 10 > GridSquares.length - 1) {
+                generate(GridSquares, shipId)
+                return
+            }
+        }
+
+        for (let i = -1; i <= 1; i++) {
+            if ((randomStart - 10) < 0 || (randomStart + shipById.childElementCount * 10 + 10) > 99) {
+                continue;
+            }
+
+            for (let j = randomStart + i - 10; j < (randomStart + shipById.childElementCount * 10 + i + 10); j += j) {
+                if (j < 0 || j > 99) {
+                    continue;
+                }
+                GridSquares[j].classList.add('taken');
+            }
+        }
+        for (let i = randomStart; i < (randomStart + shipById.childElementCount); i++) {
+            GridSquares[i].classList.add('takenByShip');
+        }
+    }
+
+    //GridSquares[randomStart].append(shipById);
+}

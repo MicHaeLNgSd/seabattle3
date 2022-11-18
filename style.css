@@ -109,12 +109,22 @@ section{
 }
 
 .taken{
-    /* background-color: palegreen; */
+     background-color: palegreen; 
 }
 
 /* .takenByShip{background-color: orange;} */
 
 .takenByShip{
+    /* box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: silver;
+    position: relative; */
+}
+
+.MyShips{
     box-sizing: content-box;
     margin: -1px;
     width: calc(10% - 2px);
@@ -149,3 +159,4 @@ button:hover {
 .miss{
     background-color: cornflowerblue;
 }
+
