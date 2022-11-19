@@ -11,6 +11,7 @@ const width = 10
 const countShips = 10
 let isGameOver = false;
 let isPlayer1 = true;
+
 const turnDisplay = document.querySelector('#whose-go')
 
 const startG = document.querySelector("#playGame");
@@ -87,6 +88,7 @@ function generate(GridSquares, shipId) {
 
     for (let i = randomStart; i < (randomStart + shipById.childElementCount * step); i += step) {
         GridSquares[i].classList.add('takenByShip');
+        GridSquares[i].classList.add(`${shipId}`);
     }
 
     for (let i = 0; i < 100; i++) {
@@ -115,41 +117,35 @@ function showMyShips(squares) {
     }
 }
 
+//generate(computerSquares, "enemyShip1");
+
+function shipIdGenerator(numSq, numShip) {
+    let shipName
+    if (numSq === 0) {
+        shipName = 's'
+    }
+    else if (numSq === 1) {
+        shipName = 'enemyS'
+    }
+    return `${shipName + 'hip' + numShip}`
+}
+
 function createShips(squares) {
     console.log("squares", squares);
     cleanBoard(squares);
 
     if (squares === computerSquares) {
         console.log("ENEMY");
-        generate(squares, "enemyShip1");
 
-        generate(squares, "enemyShip2");
-        generate(squares, "enemyShip3");
-
-        generate(squares, "enemyShip4");
-        generate(squares, "enemyShip5");
-        generate(squares, "enemyShip6");
-
-        generate(squares, "enemyShip7");
-        generate(squares, "enemyShip8");
-        generate(squares, "enemyShip9");
-        generate(squares, "enemyShip10");
+        for (let i = 1; i <= countShips; i++) {
+            generate(squares, shipIdGenerator(1, i))
+        }
     }
     else if (squares === userSquares) {
-        generate(squares, "ship1");
 
-        generate(squares, "ship2");
-        generate(squares, "ship3");
-
-        generate(squares, "ship4");
-        generate(squares, "ship5");
-        generate(squares, "ship6");
-
-        generate(squares, "ship7");
-        generate(squares, "ship8");
-        generate(squares, "ship9");
-        generate(squares, "ship10");
-
+        for (let i = 1; i <= countShips; i++) {
+            generate(squares, shipIdGenerator(0, i))
+        }
         showMyShips(squares)
     }
     shipChecker(squares);
@@ -159,60 +155,102 @@ function cleanBoard(squares) {
     //let shipsArea
     //let shipNameStart
     squares.forEach(square => {
-        square.classList.remove('taken')
-        square.classList.remove('takenByShip')
-        square.classList.remove('MyShips')
-        square.classList.remove('boom')
-        square.classList.remove('miss')
+        square.className = ""
+        square.classList.add('square')
     })
     removeShipChecker(squares);
-    // if(squares === userSquares){
-    //   shipsArea = userShipsArea
-    //   shipNameStart = 's'
-    // }
-    // else if(squares === computerSquares){
-    //   shipsArea = computerShipsArea
-    //   shipNameStart = 'enemyS'
-    // }
-    // for(let i = 1; i <= countShips; i++){
-    //   //console.log(`[id="${shipNameStart}hip${i}"]`)
-    //   shipById = document.querySelector(`[id="${shipNameStart}hip${i}"]`)
-    //   shipsArea.append(shipById)
-    // }
+
+
+    let sqSelector
+    if (squares === userSquares) {
+        sqSelector = 0
+    }
+    else if (squares === computerSquares) {
+        sqSelector = 1
+    }
+    for (let i = 1; i <= countShips; i++) {
+        shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
+        shipById.classList.remove('ship-checker-dead')
+    }
 }
 
 function shipChecker(squares) {
+    let sqSelector
     if (squares === userSquares) {
-        shipsArea = userShipsArea
-        shipNameStart = 's'
+        sqSelector = 0
     }
     else if (squares === computerSquares) {
-        shipsArea = computerShipsArea
-        shipNameStart = 'enemyS'
+        sqSelector = 1
     }
 
     for (let i = 1; i <= countShips; i++) {
-        shipById = document.querySelector(`[id="${shipNameStart}hip${i}"]`)
+        shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.add('ship-checker')
     }
 }
 
 function removeShipChecker(squares) {
+    let sqSelector
     if (squares === userSquares) {
-        shipsArea = userShipsArea
-        shipNameStart = 's'
+        sqSelector = 0
     }
     else if (squares === computerSquares) {
-        shipsArea = computerShipsArea
-        shipNameStart = 'enemyS'
+        sqSelector = 1
     }
 
     for (let i = 1; i <= countShips; i++) {
-        shipById = document.querySelector(`[id="${shipNameStart}hip${i}"]`)
+        shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.remove('ship-checker')
     }
 }
 
+function checkerDead(GridSquares) {
+    let sqSelector
+    if (GridSquares === userSquares) {
+        sqSelector = 0
+    }
+    else if (GridSquares === computerSquares) {
+        sqSelector = 1
+    }
+
+    for (let i = 1; i <= countShips; i++) {
+        let JSchecker = true;
+        GridSquares.forEach(sq => {
+            if (sq.classList.contains(`${shipIdGenerator(sqSelector, i)}`)) {
+                if (!sq.classList.contains('boom')) {
+                    JSchecker = false
+                }
+            }
+        })
+        if (JSchecker === true) {
+            GridSquares.forEach(sq => {
+                if (sq.classList.contains(`${shipIdGenerator(sqSelector, i)}`)) {
+                    sq.classList.add('dead')
+                }
+            })
+
+            shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
+            shipById.classList.add('ship-checker-dead')
+
+            for (let i = 0; i < 100; i++) {
+                for (let k = -1; k <= 1; k++) {
+                    for (let g = -1; g <= 1; g++) {
+                        if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
+                            if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
+                                if (GridSquares[i + k * 10 + g].classList.contains('dead')) {
+                                    GridSquares[i].classList.add('miss');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //let ship = square.classList.contains('enemyShip1')
+    //console.log("sh1", ship)
+    return
+}
 
 function playGameBtn() {
     turnDisplay.innerHTML = 'Your Move';
@@ -222,7 +260,7 @@ function playGameBtn() {
 }
 
 function playGame() {
-    //if (isGameOver) return
+    if (isGameOver) return
     if (isPlayer1 === true) {
         turnDisplay.innerHTML = 'Your Move';
     }
@@ -233,7 +271,9 @@ function playGame() {
     }
 }
 
+//KOSTIL
 function playerGo(square) {
+    if (isGameOver) return      //KOSTIL
     if (square.classList.contains('boom') || square.classList.contains('miss')) {
         return
         //playGame(); 
@@ -241,6 +281,8 @@ function playerGo(square) {
     else {
         if (square.classList.contains('takenByShip')) {
             square.classList.add('boom')
+            checkerDead(computerSquares)
+            checkGameOver()
             return
         } else {
             square.classList.add('miss')
@@ -262,6 +304,8 @@ function computerGo() {
     else {
         if (userSquares[random].classList.contains('takenByShip')) {
             userSquares[random].classList.add('boom')
+            checkerDead(userSquares)
+            checkGameOver()
             setTimeout(computerGo, 1000)
             //setTimeout(computerAI(random), 1000)
         } else {
@@ -274,7 +318,30 @@ function computerGo() {
     playGame()
 }
 
+function checkGameOver() {
+    let userDeadShipsScore = 0
+    let compDeadShipsScore = 0
 
+    userSquares.forEach(sq => {
+        if (sq.classList.contains('dead')) {
+            userDeadShipsScore += 1
+        }
+    })
+    computerSquares.forEach(sq => {
+        if (sq.classList.contains('dead')) {
+            compDeadShipsScore += 1
+        }
+    })
+
+    if (userDeadShipsScore === 20) {
+        turnDisplay.innerHTML = 'You Lose';
+        isGameOver = true
+    }
+    else if (compDeadShipsScore === 20) {
+        turnDisplay.innerHTML = 'You Win';
+        isGameOver = true
+    }
+}
 
 // function computerAI(random){
 //   let wrongDir

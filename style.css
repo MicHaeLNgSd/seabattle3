@@ -104,12 +104,16 @@ section{
     border: 1px solid dimgray;
 }
 
+.ship-checker-dead > .ss,.ship-checker-dead > .ess{
+    background-color: rebeccapurple;
+}
+
 .dead{
     background-color: red;
 }
 
 .taken{
-     background-color: palegreen; 
+    /* background-color: palegreen;  */
 }
 
 /* .takenByShip{background-color: orange;} */
@@ -160,3 +164,17 @@ button:hover {
     background-color: cornflowerblue;
 }
 
+.takenDead{
+    background-color:  royalblue;
+    /* background-color: dodgerblue; */
+}
+
+.dead{
+    box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: purple;
+    position: relative;
+}
