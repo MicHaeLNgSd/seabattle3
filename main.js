@@ -161,6 +161,7 @@ function cleanBoard(squares) {
     squares.forEach(square => {
         square.classList.remove('taken')
         square.classList.remove('takenByShip')
+        square.classList.remove('MyShips')
         square.classList.remove('boom')
         square.classList.remove('miss')
     })
