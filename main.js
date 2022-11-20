@@ -257,6 +257,7 @@ function playGameBtn() {
     computerSquares.forEach(square => square.addEventListener('click', function (e) {
         playerGo(square);
     }))
+    isGameOver = false
 }
 
 function playGame() {
@@ -271,30 +272,34 @@ function playGame() {
     }
 }
 
-//KOSTIL
+//KOSTIL_1 KOSTIL_2
 function playerGo(square) {
-    if (isGameOver) return      //KOSTIL
-    if (square.classList.contains('boom') || square.classList.contains('miss')) {
-        return
-        //playGame(); 
-    }
-    else {
-        if (square.classList.contains('takenByShip')) {
-            square.classList.add('boom')
-            checkerDead(computerSquares)
-            checkGameOver()
+    if (isGameOver) return      //KOSTIL_1 "GameOverNonClick"
+    if (isPlayer1 === true) {   //KOSTIL_2 "Velocity"
+        if (square.classList.contains('boom') || square.classList.contains('miss')) {
             return
-        } else {
-            square.classList.add('miss')
+            //playGame(); 
         }
-        //checkForWins()
+        else {
+            if (square.classList.contains('takenByShip')) {
+                square.classList.add('boom')
+                checkerDead(computerSquares)
+                checkGameOver()
+                return
+            } else {
+                square.classList.add('miss')
+            }
+            //checkForWins()
+        }
+        console.log("playerGo");
+        isPlayer1 = false;
+        playGame();
     }
-    console.log("playerGo");
-    isPlayer1 = false;
-    playGame();
+
 }
 
 function computerGo() {
+    //if (isGameOver) return MAYBE KOSTIL
     let random = Math.floor(Math.random() * userSquares.length);
     console.log("random", random);
 
@@ -306,7 +311,7 @@ function computerGo() {
             userSquares[random].classList.add('boom')
             checkerDead(userSquares)
             checkGameOver()
-            setTimeout(computerGo, 1000)
+            setTimeout(playerGo, 1000)
             //setTimeout(computerAI(random), 1000)
         } else {
             userSquares[random].classList.add('miss')
