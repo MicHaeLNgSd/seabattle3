@@ -117,7 +117,7 @@ function showMyShips(squares) {
     }
 }
 
-//generate(computerSquares, "enemyShip1");
+//generate(userSquares, "ship10");
 
 function shipIdGenerator(numSq, numShip) {
     let shipName
@@ -258,6 +258,7 @@ function playGameBtn() {
         playerGo(square);
     }))
     isGameOver = false
+    isPlayer1 = true
 }
 
 function playGame() {
@@ -265,10 +266,11 @@ function playGame() {
     if (isPlayer1 === true) {
         turnDisplay.innerHTML = 'Your Move';
     }
-    if (isPlayer1 === false) {
+    else if (isPlayer1 === false) {
         turnDisplay.innerHTML = 'Computer`s Move';
         //computerGo();
-        setTimeout(computerGo, 1000)
+        //setTimeout(computerGo, 1000)
+        setTimeout(computerGo, 500)
     }
 }
 
@@ -291,7 +293,7 @@ function playerGo(square) {
             }
             //checkForWins()
         }
-        console.log("playerGo");
+        //console.log("playerGo");
         isPlayer1 = false;
         playGame();
     }
@@ -299,28 +301,45 @@ function playerGo(square) {
 }
 
 function computerGo() {
-    //if (isGameOver) return MAYBE KOSTIL
-    let random = Math.floor(Math.random() * userSquares.length);
-    console.log("random", random);
+    if (isGameOver) return //MAYBE KOSTIL
+    console.log('computerGo');
+    let coord = Math.floor(Math.random() * userSquares.length);
+    let boom1
+    let isAI = false
+    for (let i = 0; i < 100; i++) {
+        if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
+            console.log('boom1', i);
+            boom1 = i
+            isAI = true
+            break
+        }
+    }
 
-    if (userSquares[random].classList.contains('boom') || userSquares[random].classList.contains('miss')) {
-        computerGo();
+    console.log('coord', coord);
+
+    if (isAI) {
+        coord = computerAI(boom1)
+    }
+
+    console.log('coord', coord);
+    if (userSquares[coord].classList.contains('boom') || userSquares[coord].classList.contains('miss')) {
+        computerGo()
+        return
     }
     else {
-        if (userSquares[random].classList.contains('takenByShip')) {
-            userSquares[random].classList.add('boom')
+        if (userSquares[coord].classList.contains('takenByShip')) {
+            userSquares[coord].classList.add('boom')
             checkerDead(userSquares)
             checkGameOver()
-            setTimeout(playerGo, 1000)
-            //setTimeout(computerAI(random), 1000)
+            setTimeout(computerGo, 500)
+            return
         } else {
-            userSquares[random].classList.add('miss')
+            userSquares[coord].classList.add('miss')
         }
-        //checkForWins()
     }
-    console.log("computerGo");
     isPlayer1 = true;
     playGame()
+    return
 }
 
 function checkGameOver() {
@@ -347,6 +366,230 @@ function checkGameOver() {
         isGameOver = true
     }
 }
+
+function computerAI(boom1) { //NOT OPTIMIZED
+    //let boom1
+    let boom2 = -1
+    let boom3 = -1
+    let direction
+    let rand
+    let temp1
+    // for (let i = 0; i < 100; i++) {
+    //     if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
+    //         console.log('boom1', i);
+    //         boom1 = i
+    //         break
+    //     }
+    // }
+    for (let i = boom1 + 1; i < 100; i++) {
+        if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
+            console.log('boom2', i);
+            boom2 = i
+
+            for (let j = boom2 + 1; j < 100; j++) {
+                if (userSquares[j].classList.contains('boom') && !userSquares[j].classList.contains('dead')) {
+                    console.log('boom3', j);
+                    boom3 = j
+                    break
+                }
+            }
+            break
+        }
+    }
+
+    if (boom2 < 0) {
+        rand = Math.floor(Math.random() * 4);
+        switch (rand) {
+            case 0:
+                temp1 = -10
+                break;
+            case 1:
+                temp1 = 1
+                break;
+            case 2:
+                temp1 = 10
+                break;
+            case 3:
+                temp1 = -1
+                break;
+            default:
+                break;
+        }
+        if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
+            !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
+                (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
+            !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
+            console.log('boom1 + temp1', boom1 + temp1);
+            return boom1 + temp1
+        }
+        else {
+            return computerAI(boom1)
+        }
+    }
+    else if (boom2 >= 0 && boom2 < 100 && boom3 < 0) { // переперевірка можна видалити
+        if (boom2 - boom1 === 1) {
+            rand = Math.floor(Math.random() * 2);
+            switch (rand) {
+                case 0:
+                    temp1 = 1
+                    break;
+                case 1:
+                    temp1 = -1
+                    break;
+                default:
+                    break;
+            }
+            if (temp1 > 0) {
+                if (boom2 + temp1 >= 0 && boom2 + temp1 < 100 &&
+                    !((boom2 % 10 === 0 && (boom2 + temp1) % 10 === 9) ||
+                        (boom2 % 10 === 9 && (boom2 + temp1) % 10 === 0)) &&
+                    !userSquares[boom2 + temp1].classList.contains('miss')) { //make faster can be deleted
+                    console.log('boom2 + temp1', boom2 + temp1);
+                    return boom2 + temp1
+                }
+                else {
+                    return computerAI(boom1)
+                }
+            }
+            else if (temp1 < 0) {
+                if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
+                    !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
+                        (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
+                    !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
+                    console.log('boom1 + temp1', boom1 + temp1);
+                    return boom1 + temp1
+                }
+                else {
+                    return computerAI(boom1)
+                }
+            }
+        }
+        else if (boom2 - boom1 === 10) {
+            rand = Math.floor(Math.random() * 2);
+            switch (rand) {
+                case 0:
+                    temp1 = 10
+                    break;
+                case 1:
+                    temp1 = -10
+                    break;
+                default:
+                    break;
+            }
+            if (temp1 > 0) {
+                if (boom2 + temp1 >= 0 && boom2 + temp1 < 100 &&
+                    !((boom2 % 10 === 0 && (boom2 + temp1) % 10 === 9) ||
+                        (boom2 % 10 === 9 && (boom2 + temp1) % 10 === 0)) &&
+                    !userSquares[boom2 + temp1].classList.contains('miss')) { //make faster can be deleted
+                    console.log('boom2 + temp1', boom2 + temp1);
+                    return boom2 + temp1
+                }
+                else {
+                    return computerAI(boom1)
+                }
+            }
+            else if (temp1 < 0) {
+                if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
+                    !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
+                        (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
+                    !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
+                    console.log('boom1 + temp1', boom1 + temp1);
+                    return boom1 + temp1
+                }
+                else {
+                    return computerAI(boom1)
+                }
+            }
+        }
+    }
+    else if (boom3 >= 0 && boom3 < 100) { // переперевірка можна видалити
+        if (boom3 - boom2 === 1) {
+            rand = Math.floor(Math.random() * 2);
+            switch (rand) {
+                case 0:
+                    temp1 = 1
+                    break;
+                case 1:
+                    temp1 = -1
+                    break;
+                default:
+                    break;
+            }
+            if (temp1 > 0) {
+                if (boom3 + temp1 >= 0 && boom3 + temp1 < 100 &&
+                    !((boom3 % 10 === 0 && (boom3 + temp1) % 10 === 9) ||
+                        (boom3 % 10 === 9 && (boom3 + temp1) % 10 === 0)) &&
+                    !userSquares[boom3 + temp1].classList.contains('miss')) { //make faster can be deleted
+                    console.log('boom3 + temp1', boom3 + temp1);
+                    return boom3 + temp1
+                }
+                else {
+                    return computerAI(boom1)
+                }
+            }
+            else if (temp1 < 0) {
+                if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
+                    !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
+                        (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
+                    !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
+                    console.log('boom1 + temp1', boom1 + temp1);
+                    return boom1 + temp1
+                }
+                else {
+                    return computerAI(boom1)
+                }
+            }
+        }
+        else if (boom3 - boom2 === 10) {
+            rand = Math.floor(Math.random() * 2);
+            switch (rand) {
+                case 0:
+                    temp1 = 10
+                    break;
+                case 1:
+                    temp1 = -10
+                    break;
+                default:
+                    break;
+            }
+            if (temp1 > 0) {
+                if (boom3 + temp1 >= 0 && boom3 + temp1 < 100 &&
+                    !((boom3 % 10 === 0 && (boom3 + temp1) % 10 === 9) ||
+                        (boom3 % 10 === 9 && (boom3 + temp1) % 10 === 0)) &&
+                    !userSquares[boom3 + temp1].classList.contains('miss')) { //make faster can be deleted
+                    console.log('boom3 + temp1', boom3 + temp1);
+                    return boom3 + temp1
+                }
+                else {
+                    return computerAI(boom1)
+                }
+            }
+            else if (temp1 < 0) {
+                if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
+                    !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
+                        (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
+                    !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
+                    console.log('boom1 + temp1', boom1 + temp1);
+                    return boom1 + temp1
+                }
+                else {
+                    return computerAI(boom1)
+                }
+            }
+        }
+    }
+}
+
+// generate(userSquares, "ship4");
+// generate(userSquares, "ship5");
+// generate(userSquares, "ship6");
+
+// generate(userSquares, "ship11");
+// generate(userSquares, "ship12");
+// generate(userSquares, "ship13");
+// generate(userSquares, "ship14");
+// generate(userSquares, "ship15");
+// showMyShips(userSquares)
 
 // function computerAI(random){
 //   let wrongDir
