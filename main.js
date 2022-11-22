@@ -319,8 +319,9 @@ function checkGameOver() {
     }
 }
 
-function computerAI(boom1) { //+-OPTIMIZED
+function computerAI(boom1) { //OPTIMIZED
     let boom
+    let maxboom
     let directionTemp
     let boom2
     let boom3
@@ -349,33 +350,19 @@ function computerAI(boom1) { //+-OPTIMIZED
             return computerAI(boom1);
         }
     }
-    else if (boom3 === undefined) {
-        directionTemp = boom2 - boom1
 
-        rand = Math.floor(Math.random() * 2);
-        step = rand ? -1 * directionTemp : 1 * directionTemp; // this is better then switch
-        boom = (step > 0) ? boom2 : boom1;
+    maxboom = (boom3 === undefined) ? boom2 : boom3
+    directionTemp = (boom3 === undefined) ? boom2 - boom1 : boom3 - boom2
 
-        if (AILogicIsCanBePlaced(boom, step)) {
-            return boom + step;
-        }
-        else {
-            return computerAI(boom1);
-        }
+    rand = Math.floor(Math.random() * 2);
+    step = rand ? -1 * directionTemp : 1 * directionTemp; // this is better then switch
+    boom = (step > 0) ? maxboom : boom1;
+
+    if (AILogicIsCanBePlaced(boom, step)) {
+        return boom + step;
     }
     else {
-        directionTemp = boom3 - boom2
-
-        rand = Math.floor(Math.random() * 2);
-        step = rand ? -1 * directionTemp : 1 * directionTemp; // this is better then switch
-        boom = (step > 0) ? boom3 : boom1;
-
-        if (AILogicIsCanBePlaced(boom, step)) {
-            return boom + step;
-        }
-        else {
-            return computerAI(boom1);
-        }
+        return computerAI(boom1);
     }
 }
 
