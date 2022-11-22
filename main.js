@@ -19,10 +19,10 @@ const startG = document.querySelector("#playGame");
 startG.addEventListener("click", playGameBtn);
 
 const randForMe = document.querySelector("#randForMe");
-randForMe.addEventListener("click", () => createShips(userSquares, true));
+randForMe.addEventListener("click", () => createShips(userSquares));
 
 const randForEnemy = document.querySelector("#randForEnemy");
-randForEnemy.addEventListener("click", () => createShips(computerSquares, false));
+randForEnemy.addEventListener("click", () => createShips(computerSquares));
 
 const CleanMe = document.querySelector("#CleanMe");
 CleanMe.addEventListener("click", () => cleanBoard(userSquares));
@@ -121,16 +121,16 @@ function shipIdGenerator(numSq, numShip) {
     return `${(numSq ? 'enemyS' : 's') + 'hip' + numShip}`
 }
 
-function createShips(squares, isUserSquares) {
-    sqSelector = Number(!isUserSquares);
+function createShips(squares) {
+    sqSelector = (squares !== userSquares);
 
     cleanBoard(squares);
 
     for (let i = 1; i <= countShips; i++) {
-        generate(squares, shipIdGenerator(!isUserSquares, i))
+        generate(squares, shipIdGenerator(sqSelector, i))
     }
 
-    if (isUserSquares) {
+    if (!sqSelector) {
         showMyShips(squares)
     }
 
@@ -138,6 +138,8 @@ function createShips(squares, isUserSquares) {
 }
 
 function cleanBoard(squares) {
+    sqSelector = (squares !== userSquares); //because it can be press after another createShips pressed
+
     //let shipsArea
     //let shipNameStart
     squares.forEach(square => {
@@ -152,14 +154,14 @@ function cleanBoard(squares) {
     }
 }
 
-function shipChecker(squares) {
+function shipChecker() { //squares
     for (let i = 1; i <= countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.add('ship-checker')
     }
 }
 
-function removeShipChecker(squares) {
+function removeShipChecker() { //squares
     for (let i = 1; i <= countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.remove('ship-checker')
@@ -167,7 +169,7 @@ function removeShipChecker(squares) {
 }
 
 function checkerDead(GridSquares) {
-    sqSelector = Number(GridSquares !== userSquares);
+    sqSelector = (GridSquares !== userSquares);
 
     for (let i = 1; i <= countShips; i++) {
         let JSchecker = true;
@@ -333,12 +335,10 @@ function computerAI(boom1) { //NOT OPTIMIZED
     // }
     for (let i = boom1 + 1; i < 100; i++) {
         if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
-            console.log('boom2', i);
             boom2 = i
 
             for (let j = boom2 + 1; j < 100; j++) {
                 if (userSquares[j].classList.contains('boom') && !userSquares[j].classList.contains('dead')) {
-                    console.log('boom3', j);
                     boom3 = j
                     break
                 }
@@ -350,27 +350,10 @@ function computerAI(boom1) { //NOT OPTIMIZED
     if (boom2 < 0) {
         rand = Math.floor(Math.random() * 4);
         temp1 = { 0: -10, 1: 1, 2: 10, 3: -1 }[rand]; // this is better then switch
-        // switch (rand) {
-        //     case 0:
-        //         temp1 = -10
-        //         break;
-        //     case 1:
-        //         temp1 = 1
-        //         break;
-        //     case 2:
-        //         temp1 = 10
-        //         break;
-        //     case 3:
-        //         temp1 = -1
-        //         break;
-        //     default:
-        //         break;
-        // }
         if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
             !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
                 (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
             !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-            console.log('boom1 + temp1', boom1 + temp1);
             return boom1 + temp1;
         }
         else {
@@ -381,22 +364,11 @@ function computerAI(boom1) { //NOT OPTIMIZED
         if (boom2 - boom1 === 1) {
             rand = Math.floor(Math.random() * 2);
             temp1 = rand ? -1 : 1; // this is better then switch
-            // switch (rand) {
-            //     case 0:
-            //         temp1 = 1
-            //         break;
-            //     case 1:
-            //         temp1 = -1
-            //         break;
-            //     default:
-            //         break;
-            // }
             if (temp1 > 0) {
                 if (boom2 + temp1 >= 0 && boom2 + temp1 < 100 &&
                     !((boom2 % 10 === 0 && (boom2 + temp1) % 10 === 9) ||
                         (boom2 % 10 === 9 && (boom2 + temp1) % 10 === 0)) &&
                     !userSquares[boom2 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    console.log('boom2 + temp1', boom2 + temp1);
                     return boom2 + temp1;
                 }
                 else {
@@ -408,7 +380,6 @@ function computerAI(boom1) { //NOT OPTIMIZED
                     !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
                         (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
                     !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    console.log('boom1 + temp1', boom1 + temp1);
                     return boom1 + temp1;
                 }
                 else {
@@ -419,22 +390,11 @@ function computerAI(boom1) { //NOT OPTIMIZED
         else if (boom2 - boom1 === 10) {
             rand = Math.floor(Math.random() * 2);
             temp1 = rand ? -10 : 10; // this is better then switch
-            // switch (rand) {
-            //     case 0:
-            //         temp1 = 10
-            //         break;
-            //     case 1:
-            //         temp1 = -10
-            //         break;
-            //     default:
-            //         break;
-            // }
             if (temp1 > 0) {
                 if (boom2 + temp1 >= 0 && boom2 + temp1 < 100 &&
                     !((boom2 % 10 === 0 && (boom2 + temp1) % 10 === 9) ||
                         (boom2 % 10 === 9 && (boom2 + temp1) % 10 === 0)) &&
                     !userSquares[boom2 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    console.log('boom2 + temp1', boom2 + temp1);
                     return boom2 + temp1
                 }
                 else {
@@ -446,7 +406,6 @@ function computerAI(boom1) { //NOT OPTIMIZED
                     !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
                         (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
                     !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    console.log('boom1 + temp1', boom1 + temp1);
                     return boom1 + temp1
                 }
                 else {
@@ -459,22 +418,11 @@ function computerAI(boom1) { //NOT OPTIMIZED
         if (boom3 - boom2 === 1) {
             rand = Math.floor(Math.random() * 2);
             temp1 = rand ? -1 : 1; // this is better then switch
-            // switch (rand) {
-            //     case 0:
-            //         temp1 = 1
-            //         break;
-            //     case 1:
-            //         temp1 = -1
-            //         break;
-            //     default:
-            //         break;
-            // }
             if (temp1 > 0) {
                 if (boom3 + temp1 >= 0 && boom3 + temp1 < 100 &&
                     !((boom3 % 10 === 0 && (boom3 + temp1) % 10 === 9) ||
                         (boom3 % 10 === 9 && (boom3 + temp1) % 10 === 0)) &&
                     !userSquares[boom3 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    console.log('boom3 + temp1', boom3 + temp1);
                     return boom3 + temp1
                 }
                 else {
@@ -486,7 +434,6 @@ function computerAI(boom1) { //NOT OPTIMIZED
                     !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
                         (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
                     !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    console.log('boom1 + temp1', boom1 + temp1);
                     return boom1 + temp1
                 }
                 else {
@@ -497,22 +444,11 @@ function computerAI(boom1) { //NOT OPTIMIZED
         else if (boom3 - boom2 === 10) {
             rand = Math.floor(Math.random() * 2);
             temp1 = rand ? -10 : 10; // this is better then switch
-            // switch (rand) {
-            //     case 0:
-            //         temp1 = 10
-            //         break;
-            //     case 1:
-            //         temp1 = -10
-            //         break;
-            //     default:
-            //         break;
-            // }
             if (temp1 > 0) {
                 if (boom3 + temp1 >= 0 && boom3 + temp1 < 100 &&
                     !((boom3 % 10 === 0 && (boom3 + temp1) % 10 === 9) ||
                         (boom3 % 10 === 9 && (boom3 + temp1) % 10 === 0)) &&
                     !userSquares[boom3 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    console.log('boom3 + temp1', boom3 + temp1);
                     return boom3 + temp1
                 }
                 else {
@@ -524,7 +460,6 @@ function computerAI(boom1) { //NOT OPTIMIZED
                     !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
                         (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
                     !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    console.log('boom1 + temp1', boom1 + temp1);
                     return boom1 + temp1
                 }
                 else {
@@ -545,53 +480,3 @@ function computerAI(boom1) { //NOT OPTIMIZED
 // generate(userSquares, "ship14");
 // generate(userSquares, "ship15");
 // showMyShips(userSquares)
-
-// function computerAI(random){
-//   let wrongDir
-//   if(random < 10){
-//     wrongDir = 0
-//   }
-//   if(random >= 90){
-//     wrongDir = 1
-//   }
-//   if(random % 10 < 1){
-//     wrongDir = 2
-//   }
-//   if(random % 10 > 8){
-//     wrongDir = 3
-//   }
-
-//   let nearRandom = Math.floor(Math.random() * 2);
-//   if (nearRandom === wrongDir){computerAI(random)};
-
-//   switch (nearRandom){
-//     case 0:
-//       nearRandom = -10
-//       break;
-//     case 1:
-//       nearRandom = 1
-//       break;
-//     case 2:
-//       nearRandom = 10
-//       break;
-//     case 3:
-//       nearRandom = -1
-//       break;
-//   }
-
-//   if(userSquares[random + nearRandom].classList.contains('boom'))
-//   {
-//       computerAI(random)
-//   }
-//   else{
-//       if (userSquares[random + nearRandom].classList.contains('takenByShip')) {
-//           userSquares[random + nearRandom].classList.add('boom')
-//           setTimeout(computerAI(random + nearRandom), 1000)
-//       } else {
-//           userSquares[random + nearRandom].classList.add('miss')
-//       }
-//       //checkForWins()
-//   }
-//   isPlayer1 = true;
-//   playGame();
-// }
