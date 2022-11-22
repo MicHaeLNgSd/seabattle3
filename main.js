@@ -319,50 +319,41 @@ function checkGameOver() {
     }
 }
 
-function computerAI(boom1) { //OPTIMIZED
+function computerAI(boomFirst) { //OPTIMIZED
+    let boomLast
     let boom
-    let maxboom
     let directionTemp
-    let boom2
-    let boom3
     let rand
     let step
-    for (let i = boom1 + 1; i < 100; i++) {
+
+    for (let i = boomFirst + 1; i < 100; i++) {
         if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
-            boom2 = i
-            for (let j = boom2 + 1; j < 100; j++) {
-                if (userSquares[j].classList.contains('boom') && !userSquares[j].classList.contains('dead')) {
-                    boom3 = j
-                    break
-                }
-            }
-            break
+            boomLast = i
         }
     }
 
-    if (boom2 === undefined) {
+    if (boomLast === undefined) {
         rand = Math.floor(Math.random() * 4);
         step = { 0: -10, 1: 1, 2: 10, 3: -1 }[rand]; // this is better then switch
-        if (AILogicIsCanBePlaced(boom1, step)) {
-            return boom1 + step;
+        if (AILogicIsCanBePlaced(boomFirst, step)) {
+            return boomFirst + step;
         }
         else {
-            return computerAI(boom1);
+            return computerAI(boomFirst);
         }
     }
 
-    maxboom = (boom3 === undefined) ? boom2 : boom3
-    directionTemp = (boom3 === undefined) ? boom2 - boom1 : boom3 - boom2
+    directionTemp = (boomLast - boomFirst < 10) ? 1 : 10
 
     rand = Math.floor(Math.random() * 2);
     step = rand ? -1 * directionTemp : 1 * directionTemp; // this is better then switch
-    boom = (step > 0) ? maxboom : boom1;
+    boom = (step > 0) ? boomLast : boomFirst;
 
     if (AILogicIsCanBePlaced(boom, step)) {
         return boom + step;
     }
     else {
-        return computerAI(boom1);
+        return computerAI(boomFirst);
     }
 }
 
