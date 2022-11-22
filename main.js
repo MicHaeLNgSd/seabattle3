@@ -263,7 +263,7 @@ function computerGo() {
     let isAI = false
     for (let i = 0; i < 100; i++) {
         if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
-            console.log('boom1', i);
+            //console.log('boom1', i);
             boom1 = i
             isAI = true
             break
@@ -319,24 +319,16 @@ function checkGameOver() {
     }
 }
 
-function computerAI(boom1) { //NOT OPTIMIZED
-    //let boom1
-    let boom2 = -1
-    let boom3 = -1
-    let direction
+function computerAI(boom1) { //+-OPTIMIZED
+    let boom
+    let directionTemp
+    let boom2
+    let boom3
     let rand
-    let temp1
-    // for (let i = 0; i < 100; i++) {
-    //     if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
-    //         console.log('boom1', i);
-    //         boom1 = i
-    //         break
-    //     }
-    // }
+    let step
     for (let i = boom1 + 1; i < 100; i++) {
         if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
             boom2 = i
-
             for (let j = boom2 + 1; j < 100; j++) {
                 if (userSquares[j].classList.contains('boom') && !userSquares[j].classList.contains('dead')) {
                     boom3 = j
@@ -347,127 +339,51 @@ function computerAI(boom1) { //NOT OPTIMIZED
         }
     }
 
-    if (boom2 < 0) {
+    if (boom2 === undefined) {
         rand = Math.floor(Math.random() * 4);
-        temp1 = { 0: -10, 1: 1, 2: 10, 3: -1 }[rand]; // this is better then switch
-        if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
-            !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
-                (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
-            !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-            return boom1 + temp1;
+        step = { 0: -10, 1: 1, 2: 10, 3: -1 }[rand]; // this is better then switch
+        if (AILogicIsCanBePlaced(boom1, step)) {
+            return boom1 + step;
         }
         else {
             return computerAI(boom1);
         }
     }
-    else if (boom2 >= 0 && boom2 < 100 && boom3 < 0) {
-        if (boom2 - boom1 === 1) {
-            rand = Math.floor(Math.random() * 2);
-            temp1 = rand ? -1 : 1; // this is better then switch
-            if (temp1 > 0) {
-                if (boom2 + temp1 >= 0 && boom2 + temp1 < 100 &&
-                    !((boom2 % 10 === 0 && (boom2 + temp1) % 10 === 9) ||
-                        (boom2 % 10 === 9 && (boom2 + temp1) % 10 === 0)) &&
-                    !userSquares[boom2 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    return boom2 + temp1;
-                }
-                else {
-                    return computerAI(boom1);
-                }
-            }
-            else if (temp1 < 0) {
-                if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
-                    !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
-                        (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
-                    !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    return boom1 + temp1;
-                }
-                else {
-                    return computerAI(boom1);
-                }
-            }
+    else if (boom3 === undefined) {
+        directionTemp = boom2 - boom1
+
+        rand = Math.floor(Math.random() * 2);
+        step = rand ? -1 * directionTemp : 1 * directionTemp; // this is better then switch
+        boom = (step > 0) ? boom2 : boom1;
+
+        if (AILogicIsCanBePlaced(boom, step)) {
+            return boom + step;
         }
-        else if (boom2 - boom1 === 10) {
-            rand = Math.floor(Math.random() * 2);
-            temp1 = rand ? -10 : 10; // this is better then switch
-            if (temp1 > 0) {
-                if (boom2 + temp1 >= 0 && boom2 + temp1 < 100 &&
-                    !((boom2 % 10 === 0 && (boom2 + temp1) % 10 === 9) ||
-                        (boom2 % 10 === 9 && (boom2 + temp1) % 10 === 0)) &&
-                    !userSquares[boom2 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    return boom2 + temp1
-                }
-                else {
-                    return computerAI(boom1)
-                }
-            }
-            else if (temp1 < 0) {
-                if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
-                    !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
-                        (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
-                    !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    return boom1 + temp1
-                }
-                else {
-                    return computerAI(boom1)
-                }
-            }
+        else {
+            return computerAI(boom1);
         }
     }
-    else if (boom3 >= 0 && boom3 < 100) {
-        if (boom3 - boom2 === 1) {
-            rand = Math.floor(Math.random() * 2);
-            temp1 = rand ? -1 : 1; // this is better then switch
-            if (temp1 > 0) {
-                if (boom3 + temp1 >= 0 && boom3 + temp1 < 100 &&
-                    !((boom3 % 10 === 0 && (boom3 + temp1) % 10 === 9) ||
-                        (boom3 % 10 === 9 && (boom3 + temp1) % 10 === 0)) &&
-                    !userSquares[boom3 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    return boom3 + temp1
-                }
-                else {
-                    return computerAI(boom1)
-                }
-            }
-            else if (temp1 < 0) {
-                if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
-                    !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
-                        (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
-                    !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    return boom1 + temp1
-                }
-                else {
-                    return computerAI(boom1)
-                }
-            }
+    else {
+        directionTemp = boom3 - boom2
+
+        rand = Math.floor(Math.random() * 2);
+        step = rand ? -1 * directionTemp : 1 * directionTemp; // this is better then switch
+        boom = (step > 0) ? boom3 : boom1;
+
+        if (AILogicIsCanBePlaced(boom, step)) {
+            return boom + step;
         }
-        else if (boom3 - boom2 === 10) {
-            rand = Math.floor(Math.random() * 2);
-            temp1 = rand ? -10 : 10; // this is better then switch
-            if (temp1 > 0) {
-                if (boom3 + temp1 >= 0 && boom3 + temp1 < 100 &&
-                    !((boom3 % 10 === 0 && (boom3 + temp1) % 10 === 9) ||
-                        (boom3 % 10 === 9 && (boom3 + temp1) % 10 === 0)) &&
-                    !userSquares[boom3 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    return boom3 + temp1
-                }
-                else {
-                    return computerAI(boom1)
-                }
-            }
-            else if (temp1 < 0) {
-                if (boom1 + temp1 >= 0 && boom1 + temp1 < 100 &&
-                    !((boom1 % 10 === 0 && (boom1 + temp1) % 10 === 9) ||
-                        (boom1 % 10 === 9 && (boom1 + temp1) % 10 === 0)) &&
-                    !userSquares[boom1 + temp1].classList.contains('miss')) { //make faster can be deleted
-                    return boom1 + temp1
-                }
-                else {
-                    return computerAI(boom1)
-                }
-            }
+        else {
+            return computerAI(boom1);
         }
     }
+}
+
+function AILogicIsCanBePlaced(boom, step) {
+    return (boom + step >= 0 && boom + step < 100 &&
+        !((boom % 10 === 0 && (boom + step) % 10 === 9) ||
+            (boom % 10 === 9 && (boom + step) % 10 === 0)) &&
+        !userSquares[boom + step].classList.contains('miss'))  //make faster can be deleted
 }
 
 // generate(userSquares, "ship4");
