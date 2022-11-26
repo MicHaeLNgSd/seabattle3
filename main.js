@@ -24,10 +24,10 @@ randForMe.addEventListener("click", () => createShips(userSquares));
 const randForEnemy = document.querySelector("#randForEnemy");
 randForEnemy.addEventListener("click", () => createShips(computerSquares));
 
-const CleanMe = document.querySelector("#CleanMe");
+const CleanMe = document.querySelector("#cleanMe");
 CleanMe.addEventListener("click", () => cleanBoard(userSquares));
 
-const CleanEnemy = document.querySelector("#CleanEnemy");
+const CleanEnemy = document.querySelector("#cleanEnemy");
 CleanEnemy.addEventListener("click", () => cleanBoard(computerSquares));
 
 //Create Board
@@ -46,12 +46,6 @@ function createBoard(grid, squares) {
 
 createBoard(userGrid, userSquares)
 createBoard(computerGrid, computerSquares)
-
-
-let draggedShip
-let draggedShipLength
-let currentSquare
-let takingSectionId
 
 function generate(GridSquares, shipId) {
     let randomDirection = Math.round(Math.random());
@@ -121,6 +115,11 @@ function shipIdGenerator(numSq, numShip) {
     return `${(numSq ? 'enemyS' : 's') + 'hip' + numShip}`
 }
 
+function shipSectionIdGenerator(numSq, numShip) {
+    let step = { 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4, 10: 4 }[numShip];
+    return `${(numSq ? 'e' : '') + 'ship-section' + step}`
+}
+
 function createShips(squares) {
     sqSelector = (squares !== userSquares);
 
@@ -151,6 +150,20 @@ function cleanBoard(squares) {
     for (let i = 1; i <= countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.remove('ship-checker-dead')
+    }
+
+    if (!sqSelector) {
+        cleanBoardFromObj()
+    }
+}
+
+function cleanBoardFromObj() {
+    let section
+    for (let i = 1; i <= countShips; i++) {
+        shipById = document.querySelector(`[id="${shipIdGenerator(0, i)}"]`)
+        section = document.querySelector(`.${shipSectionIdGenerator(0, i)}`)
+        console.log('section', section);
+        section.append(shipById)
     }
 }
 
@@ -217,6 +230,12 @@ function playGameBtn() {
     }))
     isGameOver = false
     isPlayer1 = true
+
+    myShips.forEach(ship => {
+        ship.setAttribute('draggable', false);
+    });
+    cleanBoardFromObj()
+    showMyShips(userSquares)
 }
 
 function playGame() {
@@ -374,3 +393,256 @@ function AILogicIsCanBePlaced(boom, step) {
 // generate(userSquares, "ship14");
 // generate(userSquares, "ship15");
 // showMyShips(userSquares)
+
+const dragDropBtn = document.querySelector("#dragDrop");
+dragDropBtn.addEventListener("click", dragDropFunc);
+
+let draggedShip
+let draggedShipLength
+let currentSquare
+let takingSectionId
+
+let gameStart = false
+let myShips = document.querySelectorAll('.user-ships > .ship-section > .ship')
+//console.log(myShips);
+
+function dragDropFunc() {
+    console.log('dragDropFunc active');
+    myShips.forEach(ship => {
+        ship.setAttribute('draggable', true);
+    });
+
+    myShips.forEach(ship => {
+        ship.addEventListener('dragstart', dragStart)
+        ship.addEventListener('dragend', dragEnd)
+        //ship.addEventListener('drag', drag)
+    });
+
+    userSquares.forEach(square => {
+        square.addEventListener('dragenter', dragEnter)
+        //square.addEventListener('dragleave', dragLeave)
+        square.addEventListener('dragover', dragOver)
+        square.addEventListener('drop', dragDrop)
+    });
+
+    ships.forEach(ship => ship.addEventListener('mousedown', (e) => {
+        takingSectionId = parseInt(e.target.id.substr(-1))
+        console.log("takingSection", takingSectionId)
+    }))
+
+    function dragStart(e) {
+        console.log('dragStart');
+
+        draggedShip = this
+        draggedShipLength = this.childElementCount
+        this.classList.add("ship-active")
+        e.dataTransfer.setData("ship", this.id);
+
+        for (let i = 0; i < 100; i++) {
+            if (userSquares[i].classList.contains(`${this.id}`)) {
+                userSquares[i].classList.remove('takenByShip')
+                userSquares[i].classList.remove(`${this.id}`)
+            }
+        }
+
+        for (let i = 0; i < 100; i++) {
+            for (let k = -1; k <= 1; k++) {
+                for (let g = -1; g <= 1; g++) {
+                    if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
+                        if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
+                            if (userSquares[i + k * 10 + g].classList.contains('takenByShip')) {
+                                userSquares[i].classList.add('taken');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function dragEnter(e) {
+        e.preventDefault();
+        currentSquare = parseInt(this.dataset.y) * 10 + parseInt(this.dataset.x)
+        console.log("currentSquare", currentSquare)
+    }
+
+    // function dragLeave() {
+    //     console.log('dragLeave')
+    // }
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function dragDrop(e) {
+        if (draggedShip !== undefined) {
+            //console.log("dragDrop", dragDrop)
+
+            let shipStartY = Math.floor((currentSquare - takingSectionId) / 10);
+            let shipEndY = Math.floor((currentSquare - takingSectionId + draggedShipLength - 1) / 10);
+
+            //console.log("shipStartY", shipStartY)
+            //console.log("shipEndY", shipEndY)
+
+
+            for (let i = currentSquare - takingSectionId; i < (currentSquare - takingSectionId + draggedShipLength); i++) {
+                if (userSquares[i].classList.contains("taken") || i > userSquares.length - 1) {
+                    console.log("return")
+                    return;
+                }
+            }
+
+            if (shipStartY === shipEndY) { //&& !isTaken
+                let flag = e.dataTransfer.getData("ship");
+                let ditem = document.querySelector(`[id="${flag}"]`)
+
+                for (let i = currentSquare - takingSectionId; i < (currentSquare - takingSectionId + draggedShipLength); i++) {
+                    console.log(currentSquare, takingSectionId, draggedShipLength)
+                    userSquares[i].classList.add("takenByShip")
+                    //userSquares[i].classList.add("MyShips")
+                    userSquares[i].classList.add(`${flag}`)
+                }
+
+                let y = Math.floor((currentSquare - takingSectionId) / 10);
+                let x = (currentSquare - takingSectionId) % 10;
+
+                //console.log(y)
+                //console.log(x)
+
+                let dsq = document.querySelector(`[data-y="${y}"][data-x="${x}"]`)
+
+                //console.log(ditem)
+                //console.log("dsq", dsq)
+                dsq.append(ditem)
+                //this.classList.remove("box-active") 
+            }
+        }
+    }
+
+    function dragEnd() {
+        userSquares.forEach(square => {
+            //square.className = ""
+            square.classList.remove('taken')
+            draggedShip.classList.remove("ship-active")
+        })
+        draggedShip = undefined
+    }
+}
+
+function dragDropTest() {
+    //move around user ship
+    if (!gameStart) {
+        ships.forEach(ship => {
+            ship.addEventListener('dragstart', dragStart),
+                ship.addEventListener('dragend', dragEnd)
+            ship.addEventListener('drag', drag)
+        });
+
+        userSquares.forEach(square => {
+            //square.addEventListener('dragenter', dragEnter),
+            //square.addEventListener('dragleave', dragLeave),
+            square.addEventListener('dragover', dragOver),
+                square.addEventListener('drop', dragDrop)
+        });
+
+        ships.forEach(ship => ship.addEventListener('mousedown', (e) => {
+            //const takingSection = e.target.id
+            takingSectionId = parseInt(e.target.id.substr(-1))
+            console.log("takingSection", takingSectionId)
+        }))
+    }
+
+
+
+
+    // userSquares.forEach(sq => sq.addEventListener('mousedown', (e) => {
+    //   generate()
+    // }))
+
+
+
+
+    function drag() {
+        //console.log('drag')
+    }
+
+    function dragStart(e) {
+        draggedShip = this
+        draggedShipLength = this.childElementCount
+        console.log("draggedShipLength", draggedShipLength)
+        this.classList.add("ship-active")
+        e.dataTransfer.setData("ship", this.id);
+        console.log("ship", this.id)
+    }
+
+    function dragOver(e) {
+        e.preventDefault()
+        //console.log('dragOver')
+
+        currentSquare = parseInt(this.dataset.y) * 10 + parseInt(this.dataset.x)
+
+        let shipStartY = Math.floor((currentSquare - takingSectionId) / 10)
+        let shipEndY = Math.floor((currentSquare - takingSectionId + draggedShipLength - 1) / 10)
+        if (shipStartY === shipEndY) {
+            for (let i = currentSquare - takingSectionId; i < (currentSquare - takingSectionId + draggedShipLength); i++) {
+                userSquares[i].classList.add('taken')
+            }
+        }
+    }
+
+    function dragEnter(e) {
+        e.preventDefault()
+        console.log('dragEnter')
+    }
+
+    function dragLeave() {
+        console.log('dragLeave')
+
+        for (let i = currentSquare - takingSectionId; i < (currentSquare - takingSectionId + draggedShipLength); i++) {
+            userSquares[i].classList.remove('taken')
+        }
+    }
+
+    function dragDrop(ev) {
+
+        let shipStartY = Math.floor((currentSquare - takingSectionId) / 10);
+        let shipEndY = Math.floor((currentSquare - takingSectionId + draggedShipLength - 1) / 10);
+
+        //taken заменить на АКТИВ а так же полностью описать новый taken
+        let isTaken = false;
+        for (let i = currentSquare - takingSectionId; i < (currentSquare - takingSectionId + draggedShipLength) && i < userSquares.length - 1; i++) {
+            if (userSquares[i].classList.contains("taken")) {
+                isTaken = true;
+            }
+        }
+
+        if (shipStartY === shipEndY) { //&& !isTaken
+            const flag = ev.dataTransfer.getData("ship");
+            const ditem = document.querySelector(`[id="${flag}"]`)
+
+            const y = Math.floor((currentSquare - takingSectionId) / 10);
+            const x = (currentSquare - takingSectionId) % 10;
+
+            console.log(y)
+            console.log(x)
+
+            const dsq = document.querySelector(`[data-y="${y}"][data-x="${x}"]`)
+
+            console.log('currentSquare', currentSquare, " ", takingSectionId)
+
+            //console.log(ditem)
+            console.log("dsq", dsq)
+            dsq.append(ditem)
+            //this.classList.remove("box-active") 
+        }
+    }
+
+    function dragEnd() {
+        console.log('dragend')
+        draggedShip.classList.remove("ship-active")
+
+        userSquares.forEach(sq => sq.classList.remove('taken'))
+    }
+
+}
+

@@ -54,6 +54,7 @@ section{
 .ship-section{
     background-color: pink;
     display: flex;
+    min-height: 45px;
 }
 .ship-section > .ship{
     margin: 15px 0 0 15px;
@@ -113,10 +114,10 @@ section{
 }
 
 .taken{
-    /* background-color: palegreen;  */
+    background-color: palegreen; 
 }
 
-/* .takenByShip{background-color: orange;} */
+.takenByShip{background-color: orange;}
 
 .takenByShip{
     /* box-sizing: content-box;
