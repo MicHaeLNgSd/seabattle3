@@ -113,7 +113,7 @@ function shipIdGenerator(numSq, numShip) {
 }
 
 function shipSectionIdGenerator(numSq, numShip) {
-    let step = { 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4, 10: 4 }[numShip];
+    let step = { 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4, 10: 4 }[numShip]; //ship:section
     return `${(numSq ? 'e' : '') + 'ship-section' + step}`
 }
 
@@ -128,30 +128,29 @@ function createShips(squares) {
 
     if (!sqSelector) {
         showMyShips(squares)
+        startG.disabled = false
+        turnDisplay.innerHTML = 'Press Start';
     }
 
     shipChecker(squares);
+    rotateBtn.disabled = true
 }
 
 function cleanBoard(squares) {
     sqSelector = (squares !== userSquares); //because it can be press after another createShips pressed
-
-    //let shipsArea
-    //let shipNameStart
     squares.forEach(square => {
         square.className = ""
         square.classList.add('square')
     })
     removeShipChecker(squares);
 
-    // for (let i = 1; i <= countShips; i++) {
-    //     shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
-    //     shipById.classList.remove('ship-checker-dead')
-    // }
-
     if (!sqSelector) {
         cleanBoardFromObj()
     }
+    CleanMe.disabled = true
+    //rotateBtn.disabled = true
+    startG.disabled = true
+    turnDisplay.innerHTML = 'Place Ships';
 }
 
 function cleanBoardFromObj() {
@@ -224,9 +223,16 @@ function checkerDead(GridSquares) {
             }
         }
     }
-    //let ship = square.classList.contains('enemyShip1')
-    //console.log("sh1", ship)
     return
+}
+
+function isShipsOnField(GridSquares) {
+    GridSquares.forEach(square => {
+        if (square.classList.contains("takenByShip")) {
+            return true;
+        }
+    })
+    return false;
 }
 
 function playGameBtn() {
@@ -240,9 +246,22 @@ function playGameBtn() {
     myShips.forEach(ship => {
         ship.setAttribute('draggable', false);
     });
+
+    if (!isShipsOnField(userSquares)) {
+        createShips(userSquares)
+    }
+    if (!isShipsOnField(computerSquares)) {
+        createShips(computerSquares)
+    }
+
     cleanBoardFromObj()
     showMyShips(userSquares)
     shipChecker(userSquares)
+
+    randForMe.disabled = true
+    CleanMe.disabled = true
+    rotateBtn.disabled = true
+    dragDropBtn.disabled = true
 }
 
 function playGame() {
@@ -252,8 +271,6 @@ function playGame() {
         turnDisplay.innerHTML = 'Your Move';
     } else {
         turnDisplay.innerHTML = 'Computer`s Move';
-        //computerGo();
-        //setTimeout(computerGo, 1000)
         setTimeout(computerGo, 500)
     }
 }
@@ -283,42 +300,33 @@ function playerGo(square) {
 
 function computerGo() {
     if (isGameOver) return
-
     let coord = Math.floor(Math.random() * userSquares.length);
     let boom1
     let isAI = false
     for (let i = 0; i < 100; i++) {
         if (userSquares[i].classList.contains('boom') && !userSquares[i].classList.contains('dead')) {
-            //console.log('boom1', i);
             boom1 = i
             isAI = true
             break
         }
     }
-
     if (isAI) {
         coord = computerAI(boom1)
     }
-
     if (userSquares[coord].classList.contains('boom') || userSquares[coord].classList.contains('miss')) {
         return computerGo()
     } else {
         if (userSquares[coord].classList.contains('takenByShip')) {
             userSquares[coord].classList.add('boom')
-
             checkerDead(userSquares)
             checkGameOver()
-
             setTimeout(computerGo, 500)
-
             return
         } else {
             userSquares[coord].classList.add('miss')
         }
     }
-
     isPlayer1 = true;
-
     playGame()
 }
 
@@ -342,6 +350,7 @@ function checkGameOver() {
         turnDisplay.innerHTML = userDeadShipsScore > compDeadShipsScore ? 'You Lose' : 'You Win';
 
         isGameOver = true
+        restartBtn.classList.remove("invisible")
     }
 }
 
@@ -414,6 +423,9 @@ let gameStart = false
 //console.log(myShips);
 let myShips = document.querySelectorAll('.user-ships > .ship-section > .ship')
 function dragDropFunc() {
+    cleanBoard(userSquares)
+    rotateBtn.disabled = false
+
     console.log('dragDropFunc active');
     myShips.forEach(ship => {
         ship.setAttribute('draggable', true);
@@ -484,12 +496,6 @@ function dragDropFunc() {
 
     function dragDrop(e) {
         if (draggedShip !== undefined) {
-            //console.log("dragDrop", dragDrop)
-
-
-
-            //console.log("shipStartY", shipStartY)
-            //console.log("shipEndY", shipEndY)
             let step = (isHorizontal) ? 1 : 10;
 
             if (isHorizontal) {
@@ -514,24 +520,22 @@ function dragDropFunc() {
             for (let i = currentSquare - takingSectionId * step; i < (currentSquare - (takingSectionId - draggedShipLength) * step); i += step) {
                 console.log(currentSquare, takingSectionId, draggedShipLength, step)
                 userSquares[i].classList.add("takenByShip")
-                //userSquares[i].classList.add("MyShips")
                 userSquares[i].classList.add(`${flag}`)
             }
 
             let y = Math.floor((currentSquare - takingSectionId * step) / 10);
             let x = (currentSquare - takingSectionId * step) % 10;
 
-            //console.log(y)
-            //console.log(x)
-
             let dsq = document.querySelector(`[data-y="${y}"][data-x="${x}"]`)
-
-            //console.log(ditem)
-            //console.log("dsq", dsq)
             dsq.append(ditem)
-            //this.classList.remove("box-active") 
 
+            if (document.querySelectorAll('.user-ships > .ship-section > .ship').length == 0) {
+                startG.disabled = false
+                turnDisplay.innerHTML = 'Press Start';
+                rotateBtn.disabled = true
+            }
         }
+        CleanMe.disabled = false
     }
 
     function dragEnd() {
@@ -560,4 +564,24 @@ function rotate() {
     });
     userShipsArea.classList.toggle('user-ships-vertical');
     isHorizontal = !isHorizontal
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    startG.disabled = true
+    //startG.setAttribute("disabled", "disabled")
+    rotateBtn.disabled = true
+    CleanMe.disabled = true
+    restartBtn.classList.add("invisible")
+})
+
+const restartBtn = document.querySelector("#restart");
+restartBtn.addEventListener("click", restart);
+
+function restart() {
+    cleanBoard(userSquares)
+    cleanBoard(computerSquares)
+
+    randForMe.disabled = false
+    dragDropBtn.disabled = false
 }

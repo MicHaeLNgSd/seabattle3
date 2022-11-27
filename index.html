@@ -16,7 +16,7 @@
     <main>
         <section>
             <div class="container mover">
-                <h3 id="whose-go">Press Start</h3>
+                <h3 id="whose-go">Place Ships</h3>
             </div>
         </section>
         <section class = "fields">
@@ -74,13 +74,16 @@
                 </div>
             </div>
 
-            <section>
+            <section class="buttons">
                 <div class="container button-section">
                     <button id="playGame" type="button" name="run_script">Старт</button>
-                    <button id="randForMe" type="button" name="run_script">Рандом для гравця1</button>
-                    <button id="dragDrop" type="button" name="run_script">DragDrop</button>
-                    <button id="rotate" type="button" name="run_script">Rotate</button>
-                    <button id="cleanMe" type="button" name="run_script">Очитити1</button>
+                    <button id="randForMe" type="button" name="run_script">Випадково</button>
+                    <button id="dragDrop" type="button" name="run_script">Вручну</button>
+                    <button id="rotate" type="button" name="run_script">Повернути</button>
+                    <button id="cleanMe" type="button" name="run_script">Очистити</button>
+                </div>
+                <div class="container button-section restart">
+                    <button id="restart" type="button" name="run_script">З Початку</button>
                 </div>
             </section>
 
@@ -139,7 +142,7 @@
             </div>
         </section>
     
-        <section>
+        <section class="invisible">
                 <button id="randForEnemy" type="button" name="run_script">Рандом для гравця2</button>
                 <button id="cleanEnemy" type="button" name="run_script">Очитити2</button>
             </div>

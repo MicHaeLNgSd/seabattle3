@@ -10,8 +10,8 @@ header,footer{
     display: flex;
     height: 10%;
     width: 100%;
-    background-color:cornflowerblue;
-    //background-color:rgb(135, 187, 235);
+    background-color:rgb(121, 160, 233);
+    /* //background-color:rgb(135, 187, 235); */
 }
 
 main{
@@ -30,7 +30,7 @@ header > h1{
     margin-left: 50px;
     font-size: 40px;
     color:whitesmoke;
-    text-shadow: 5px 5px 10px royalblue, -5px -5px 10px plum;
+    text-shadow: 5px 5px 10px royalblue, -5px -5px 10px palevioletred;
 }
 
 footer{
@@ -60,6 +60,8 @@ section{
 }
 
 .mover{
+    min-width: 20%;
+    text-align: center;
     margin-top: 20px;
     padding-inline: 20px;
     background-color:cornflowerblue;
@@ -105,6 +107,10 @@ section{
     display: flex;
     min-height: 48px;
     width: 100%;
+}
+
+.invisible{
+    visibility: hidden;
 }
 
 .ship-section > .ship{
@@ -155,15 +161,30 @@ section{
 }
 
 .button-section{
-    background-color:burlywood;
-
-    height: 100%;
+    margin-top: 30px;
+    background-color:bisque;
+    height: 70%;
     justify-content: space-evenly;
 }
 
 .button-section > button{
-    height: 30px;
+    /* //line-height:  30px; */
+    vertical-align: text-top;
+    font-size: 22px;
+    color: whitesmoke;
+    text-align: center;
+    padding: 0px 20px 0px 20px;
+    height: 50px;
+    background-color: cornflowerblue;
+    border: 3px solid royalblue;
+    border-radius: 20px;
 }
+
+button:hover { 
+    background: royalblue;
+    /* //color: royalblue; */
+}
+
 
 .little{
     transform-origin: center left;
@@ -217,10 +238,6 @@ section{
     position: relative;
 }
 
-button:hover { 
-    background: skyblue;
-}
-
 .unselectable {
     user-drag: none; 
     user-select: none;
@@ -258,3 +275,15 @@ button:hover {
     position: relative;
 }
 
+button:disabled{
+    opacity: 60%;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+}
+
+.restart{
+    height: max-content;
+}
