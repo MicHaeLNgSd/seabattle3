@@ -584,4 +584,6 @@ function restart() {
 
     randForMe.disabled = false
     dragDropBtn.disabled = false
+
+    restartBtn.classList.add("invisible")
 }
