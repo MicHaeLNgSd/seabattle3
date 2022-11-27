@@ -2,15 +2,54 @@
     box-sizing: border-box;
 }
 
+body{
+    height: 100vh;
+}
+
+header,footer{
+    display: flex;
+    height: 10%;
+    width: 100%;
+    background-color:cornflowerblue;
+    //background-color:rgb(135, 187, 235);
+}
+
+main{
+    background-color:bisque;
+    height: 80%;
+
+    display: flex !important;
+    flex-direction: column;
+}
+
+
+
+header > h1{
+    max-height: max-content;
+    display: flex;
+    margin-left: 50px;
+    font-size: 40px;
+    color:whitesmoke;
+    text-shadow: 5px 5px 10px royalblue, -5px -5px 10px plum;
+}
+
+footer{
+    display: flex;
+    height: 10vh;
+}
+
 .user-grid,.computer-grid{
     border: 1px solid lightcyan;
 }
 
 section{
-    background-color:bisque;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
+}
+
+.fields > .container {
+    margin-inline: 7vw;
 }
 
 .container{
@@ -18,6 +57,16 @@ section{
     flex-direction: column;
     background-color: aquamarine;
     height: max-content;
+}
+
+.mover{
+    margin-top: 20px;
+    padding-inline: 20px;
+    background-color:cornflowerblue;
+    border: 5px dashed palevioletred;
+    border-radius: 20px;
+    color:whitesmoke;
+    font-size: 30px;
 }
 
 .container-g{
@@ -54,8 +103,10 @@ section{
 .ship-section{
     background-color: pink;
     display: flex;
-    min-height: 45px;
+    min-height: 48px;
+    width: 100%;
 }
+
 .ship-section > .ship{
     margin: 15px 0 0 15px;
 }
@@ -69,7 +120,34 @@ section{
     border: 1px solid dimgray;
 }
 
+.user-ships-vertical{
+    display: flex;
+    flex-direction: row;
+}
 
+.ship-section-vertical{
+    width: 17%;
+    flex-direction: column; 
+    height: 190px;
+    max-height: 190px;
+    flex-wrap: wrap; 
+}
+
+.user-ships-vertical > .ship-section2,.user-ships-vertical >.ship-section3{
+    width: 34%;
+}
+
+.ship-vertical{
+    flex-direction: column;
+    height: max-content;
+}
+
+.ss,.ess{
+    height: 30px;
+    width: 30px;
+    background-color: silver;
+    border: 1px solid dimgray;
+}
 
 .square > .ship{
     box-sizing: content-box;
@@ -78,11 +156,14 @@ section{
 
 .button-section{
     background-color:burlywood;
-    width: 100%;
-    max-width: 1000px;
+
+    height: 100%;
     justify-content: space-evenly;
 }
 
+.button-section > button{
+    height: 30px;
+}
 
 .little{
     transform-origin: center left;
@@ -98,13 +179,6 @@ section{
     opacity: 0.6;
 }
 
-.ss,.ess{
-    height: 100%;
-    width: 30px;
-    background-color: silver;
-    border: 1px solid dimgray;
-}
-
 .ship-checker-dead > .ss,.ship-checker-dead > .ess{
     background-color: rebeccapurple;
 }
@@ -114,10 +188,10 @@ section{
 }
 
 .taken{
-    background-color: palegreen; 
+    /* background-color: palegreen;  */
 }
 
-.takenByShip{background-color: orange;}
+/* .takenByShip{background-color: orange;} */
 
 .takenByShip{
     /* box-sizing: content-box;
@@ -127,6 +201,10 @@ section{
     border: 2px solid dimgray;
     background-color: silver;
     position: relative; */
+}
+
+.MyTaken{
+     background-color: palegreen;  
 }
 
 .MyShips{
@@ -179,3 +257,4 @@ button:hover {
     background-color: purple;
     position: relative;
 }
+
