@@ -111,6 +111,36 @@ section{
     background-color: gray;
 } */
 
+.user-grid, .computer-grid {
+    counter-set: first_row_square_counter 1;
+}
+
+.square:nth-child(-n+10) {
+    counter-increment: first_row_square_counter 1;
+}
+
+.square:nth-child(-n+10):before {
+    content: counter(first_row_square_counter, upper-alpha);
+    position: relative;
+    top: -20px;
+    left: 8px;
+}
+
+.square:nth-child(10n+1) {
+    counter-increment: first_col_square_counter 1;
+}
+
+.square:nth-child(10n+1):after {
+    content: counter(first_col_square_counter);
+    position: relative;
+    top: 6px;
+    left: -20px;
+}
+
+.square:first-child:after {
+    left: -30px;
+}
+
 .ship-section{
     background-color: pink;
     display: flex;
