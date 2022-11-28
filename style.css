@@ -35,7 +35,16 @@ header > h1{
 
 footer{
     display: flex;
+    justify-content: space-between;
     height: 10vh;
+}
+
+.footer-sec{
+    color: whitesmoke;
+    margin-inline: 20px;
+    line-height: 22px;
+    text-align: center;
+    min-width: 21%;
 }
 
 .user-grid,.computer-grid{

@@ -129,7 +129,8 @@ function createShips(squares) {
     if (!sqSelector) {
         showMyShips(squares)
         startG.disabled = false
-        turnDisplay.innerHTML = 'Press Start';
+        turnDisplay.innerHTML = 'Натисніть Старт';
+        //turnDisplay.innerHTML = 'Press Start';
     }
 
     shipChecker(squares);
@@ -146,11 +147,12 @@ function cleanBoard(squares) {
 
     if (!sqSelector) {
         cleanBoardFromObj()
+        turnDisplay.innerHTML = 'Розставте кораблі';
     }
     CleanMe.disabled = true
     //rotateBtn.disabled = true
     startG.disabled = true
-    turnDisplay.innerHTML = 'Place Ships';
+    //turnDisplay.innerHTML = 'Place Ships';
 }
 
 function cleanBoardFromObj() {
@@ -227,16 +229,17 @@ function checkerDead(GridSquares) {
 }
 
 function isShipsOnField(GridSquares) {
-    GridSquares.forEach(square => {
-        if (square.classList.contains("takenByShip")) {
+    for (let i = 0; i < GridSquares.length; i++) {
+        if (GridSquares[i].classList.contains("takenByShip")) {
             return true;
         }
-    })
+    }
     return false;
 }
 
 function playGameBtn() {
-    turnDisplay.innerHTML = 'Your Move';
+    //turnDisplay.innerHTML = 'Your Move';
+    turnDisplay.innerHTML = 'Ваш Хід';
     computerSquares.forEach(square => square.addEventListener('click', function (e) {
         playerGo(square);
     }))
@@ -268,9 +271,11 @@ function playGame() {
     if (isGameOver) return
 
     if (isPlayer1) {
-        turnDisplay.innerHTML = 'Your Move';
+        //turnDisplay.innerHTML = 'Your Move';
+        turnDisplay.innerHTML = 'Ваш Хід';
     } else {
-        turnDisplay.innerHTML = 'Computer`s Move';
+        //turnDisplay.innerHTML = 'Your Move';
+        turnDisplay.innerHTML = 'Хід Суперника';
         setTimeout(computerGo, 500)
     }
 }
@@ -347,7 +352,8 @@ function checkGameOver() {
     })
 
     if (userDeadShipsScore === 20 || compDeadShipsScore === 20) {
-        turnDisplay.innerHTML = userDeadShipsScore > compDeadShipsScore ? 'You Lose' : 'You Win';
+        //turnDisplay.innerHTML = userDeadShipsScore > compDeadShipsScore ? 'You Lose' : 'You Win';
+        turnDisplay.innerHTML = userDeadShipsScore > compDeadShipsScore ? 'Ви Програли' : 'Ви Перемогли';
 
         isGameOver = true
         restartBtn.classList.remove("invisible")
@@ -531,7 +537,8 @@ function dragDropFunc() {
 
             if (document.querySelectorAll('.user-ships > .ship-section > .ship').length == 0) {
                 startG.disabled = false
-                turnDisplay.innerHTML = 'Press Start';
+                //turnDisplay.innerHTML = 'Press Start';
+                turnDisplay.innerHTML = 'Натисніть Старт';
                 rotateBtn.disabled = true
             }
         }
