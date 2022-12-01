@@ -148,9 +148,10 @@ function cleanBoard(squares) {
     if (!sqSelector) {
         cleanBoardFromObj()
         turnDisplay.innerHTML = 'Розставте кораблі';
+        removeDragDrop()
     }
     CleanMe.disabled = true
-    //rotateBtn.disabled = true
+    rotateBtn.disabled = true
     startG.disabled = true
     //turnDisplay.innerHTML = 'Place Ships';
 }
@@ -425,9 +426,10 @@ let currentSquare
 let takingSectionId
 
 let gameStart = false
-
+let isHorizontal = true
 //console.log(myShips);
 let myShips = document.querySelectorAll('.user-ships > .ship-section > .ship')
+
 function dragDropFunc() {
     cleanBoard(userSquares)
     rotateBtn.disabled = false
@@ -454,105 +456,109 @@ function dragDropFunc() {
         takingSectionId = parseInt(e.target.id.substr(-1))
         console.log("takingSection", takingSectionId)
     }))
+}
 
-    function dragStart(e) {
-        console.log('dragStart');
+function dragStart(e) {
+    console.log('dragStart');
 
-        draggedShip = this
-        draggedShipLength = this.childElementCount
-        this.classList.add("ship-active")
-        e.dataTransfer.setData("ship", this.id);
+    draggedShip = this
+    draggedShipLength = this.childElementCount
+    this.classList.add("ship-active")
+    e.dataTransfer.setData("ship", this.id);
 
-        for (let i = 0; i < 100; i++) {
-            if (userSquares[i].classList.contains(`${this.id}`)) {
-                userSquares[i].classList.remove('takenByShip')
-                userSquares[i].classList.remove(`${this.id}`)
-            }
+    isHorizontal = !draggedShip.classList.contains('ship-vertical')
+    console.log('isHorizontal', isHorizontal);
+
+    for (let i = 0; i < 100; i++) {
+        userSquares[i].classList.remove('taken')
+        if (userSquares[i].classList.contains(`${this.id}`)) {
+            userSquares[i].classList.remove('takenByShip')
+            userSquares[i].classList.remove(`${this.id}`)
         }
+    }
 
-        for (let i = 0; i < 100; i++) {
-            for (let k = -1; k <= 1; k++) {
-                for (let g = -1; g <= 1; g++) {
-                    if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
-                        if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
-                            if (userSquares[i + k * 10 + g].classList.contains('takenByShip')) {
-                                userSquares[i].classList.add('taken');
-                                userSquares[i].classList.add('MyTaken');
-                            }
+    for (let i = 0; i < 100; i++) {
+        for (let k = -1; k <= 1; k++) {
+            for (let g = -1; g <= 1; g++) {
+                if (i + k * 10 + g >= 0 && i + k * 10 + g < 100) {
+                    if (Math.floor(i / 10) === Math.floor((i + g) / 10)) {
+                        if (userSquares[i + k * 10 + g].classList.contains('takenByShip')) {
+                            userSquares[i].classList.add('taken');
+                            userSquares[i].classList.add('MyTaken');
                         }
                     }
                 }
             }
         }
     }
+}
 
-    function dragEnter(e) {
-        e.preventDefault();
-        currentSquare = parseInt(this.dataset.y) * 10 + parseInt(this.dataset.x)
-        console.log("currentSquare", currentSquare)
-    }
+function dragEnter(e) {
+    e.preventDefault();
+    currentSquare = parseInt(this.dataset.y) * 10 + parseInt(this.dataset.x)
+    console.log("currentSquare", currentSquare)
+}
 
-    // function dragLeave() {
-    //     console.log('dragLeave')
-    // }
+// function dragLeave() {
+//     console.log('dragLeave')
+// }
 
-    function dragOver(e) {
-        e.preventDefault();
-    }
+function dragOver(e) {
+    e.preventDefault();
+}
 
-    function dragDrop(e) {
-        if (draggedShip !== undefined) {
-            let step = (isHorizontal) ? 1 : 10;
+function dragDrop(e) {
+    if (draggedShip !== undefined) {
+        let step = (isHorizontal) ? 1 : 10;
 
-            if (isHorizontal) {
-                let shipStartY = Math.floor((currentSquare - takingSectionId) / 10);
-                let shipEndY = Math.floor((currentSquare - takingSectionId + draggedShipLength - 1) / 10);
-                if (shipStartY !== shipEndY) {
-                    return;
-                }
-            }
-
-            for (let i = currentSquare - takingSectionId * step; i < (currentSquare - (takingSectionId - draggedShipLength) * step); i += step) {
-                if (userSquares[i].classList.contains("taken") || i > userSquares.length - 1) {
-                    console.log("return")
-                    return;
-                }
-            }
-
-
-            let flag = e.dataTransfer.getData("ship");
-            let ditem = document.querySelector(`[id="${flag}"]`)
-
-            for (let i = currentSquare - takingSectionId * step; i < (currentSquare - (takingSectionId - draggedShipLength) * step); i += step) {
-                console.log(currentSquare, takingSectionId, draggedShipLength, step)
-                userSquares[i].classList.add("takenByShip")
-                userSquares[i].classList.add(`${flag}`)
-            }
-
-            let y = Math.floor((currentSquare - takingSectionId * step) / 10);
-            let x = (currentSquare - takingSectionId * step) % 10;
-
-            let dsq = document.querySelector(`[data-y="${y}"][data-x="${x}"]`)
-            dsq.append(ditem)
-
-            if (document.querySelectorAll('.user-ships > .ship-section > .ship').length == 0) {
-                startG.disabled = false
-                //turnDisplay.innerHTML = 'Press Start';
-                turnDisplay.innerHTML = 'Натисніть Старт';
-                rotateBtn.disabled = true
+        if (isHorizontal) {
+            let shipStartY = Math.floor((currentSquare - takingSectionId) / 10);
+            let shipEndY = Math.floor((currentSquare - takingSectionId + draggedShipLength - 1) / 10);
+            if (shipStartY !== shipEndY) {
+                return;
             }
         }
-        CleanMe.disabled = false
-    }
 
-    function dragEnd() {
-        userSquares.forEach(square => {
-            //square.className = ""
-            square.classList.remove('MyTaken')
-            draggedShip.classList.remove("ship-active")
-        })
-        draggedShip = undefined
+        for (let i = currentSquare - takingSectionId * step; i < (currentSquare - (takingSectionId - draggedShipLength) * step); i += step) {
+            if (userSquares[i].classList.contains("taken") || i > userSquares.length - 1) {
+                console.log("return")
+                return;
+            }
+        }
+
+
+        let flag = e.dataTransfer.getData("ship");
+        let ditem = document.querySelector(`[id="${flag}"]`)
+
+        for (let i = currentSquare - takingSectionId * step; i < (currentSquare - (takingSectionId - draggedShipLength) * step); i += step) {
+            console.log(currentSquare, takingSectionId, draggedShipLength, step)
+            userSquares[i].classList.add("takenByShip")
+            userSquares[i].classList.add(`${flag}`)
+        }
+
+        let y = Math.floor((currentSquare - takingSectionId * step) / 10);
+        let x = (currentSquare - takingSectionId * step) % 10;
+
+        let dsq = document.querySelector(`[data-y="${y}"][data-x="${x}"]`)
+        dsq.append(ditem)
+
+        if (document.querySelectorAll('.user-ships > .ship-section > .ship').length == 0) {
+            startG.disabled = false
+            //turnDisplay.innerHTML = 'Press Start';
+            turnDisplay.innerHTML = 'Натисніть Старт';
+            rotateBtn.disabled = true
+        }
     }
+    CleanMe.disabled = false
+}
+
+function dragEnd() {
+    userSquares.forEach(square => {
+        //square.className = ""
+        square.classList.remove('MyTaken')
+        draggedShip.classList.remove("ship-active")
+    })
+    draggedShip = undefined
 }
 
 const rotateBtn = document.querySelector("#rotate");
@@ -560,7 +566,7 @@ rotateBtn.addEventListener("click", rotate);
 
 let myShipSection = document.querySelectorAll('.user-ships > .ship-section')
 let myShipsRotate
-let isHorizontal = true
+
 function rotate() {
     myShipsRotate = document.querySelectorAll('.user-ships > .ship-section > .ship')
     myShipsRotate.forEach(ship => {
@@ -570,7 +576,7 @@ function rotate() {
         sec.classList.toggle('ship-section-vertical');
     });
     userShipsArea.classList.toggle('user-ships-vertical');
-    isHorizontal = !isHorizontal
+    //isHorizontal = !isHorizontal
 }
 
 
@@ -593,4 +599,28 @@ function restart() {
     dragDropBtn.disabled = false
 
     restartBtn.classList.add("invisible")
+}
+
+function removeDragDrop() {
+    myShips.forEach(ship => {
+        ship.setAttribute('draggable', false);
+    });
+
+    myShips.forEach(ship => {
+        ship.removeEventListener('dragstart', dragStart)
+        ship.removeEventListener('dragend', dragEnd)
+        //ship.addEventListener('drag', drag)
+    });
+
+    userSquares.forEach(square => {
+        square.removeEventListener('dragenter', dragEnter)
+        //square.addEventListener('dragleave', dragLeave)
+        square.removeEventListener('dragover', dragOver)
+        square.removeEventListener('drop', dragDrop)
+    });
+
+    ships.forEach(ship => ship.removeEventListener('mousedown', (e) => {
+        takingSectionId = parseInt(e.target.id.substr(-1))
+        console.log("takingSection", takingSectionId)
+    }))
 }
