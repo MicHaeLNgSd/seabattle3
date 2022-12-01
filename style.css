@@ -92,6 +92,7 @@ section{
     background-color: plum;
     height: 300px;
     width: 300px;
+    position: relative;
 }
 .user-ships,.computer-ships{
     background-color: plum;
@@ -124,6 +125,7 @@ section{
     position: relative;
     top: -20px;
     left: 8px;
+    float: left;
 }
 
 .square:nth-child(10n+1) {
@@ -163,6 +165,7 @@ section{
     width: max-content;
     position: relative;
     border: 1px solid dimgray;
+    position: absolute;
 }
 
 .user-ships-vertical{
