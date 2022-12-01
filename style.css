@@ -165,7 +165,7 @@ section{
     width: max-content;
     position: relative;
     border: 1px solid dimgray;
-    position: absolute;
+    
 }
 
 .user-ships-vertical{
@@ -200,6 +200,7 @@ section{
 .square > .ship{
     box-sizing: content-box;
     margin: -2px;
+    position: absolute;
 }
 
 .button-section{
