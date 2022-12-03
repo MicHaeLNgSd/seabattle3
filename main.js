@@ -21,14 +21,14 @@ startG.addEventListener("click", playGameBtn);
 const randForMe = document.querySelector("#randForMe");
 randForMe.addEventListener("click", () => createShips(userSquares));
 
-const randForEnemy = document.querySelector("#randForEnemy");
-randForEnemy.addEventListener("click", () => createShips(computerSquares));
+// const randForEnemy = document.querySelector("#randForEnemy");
+// randForEnemy.addEventListener("click", () => createShips(computerSquares));
 
 const CleanMe = document.querySelector("#cleanMe");
 CleanMe.addEventListener("click", () => cleanBoard(userSquares));
 
-const CleanEnemy = document.querySelector("#cleanEnemy");
-CleanEnemy.addEventListener("click", () => cleanBoard(computerSquares));
+// const CleanEnemy = document.querySelector("#cleanEnemy");
+// CleanEnemy.addEventListener("click", () => cleanBoard(computerSquares));
 
 //Create Board
 function createBoard(grid, squares) {
