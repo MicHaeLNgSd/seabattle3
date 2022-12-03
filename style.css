@@ -268,8 +268,19 @@ button:hover {
     position: relative; */
 }
 
+.takenGOVision{
+    box-sizing: content-box;
+    margin: -1px;
+    width: calc(10% - 2px);
+    height: calc(10% - 2px);
+    border: 2px solid dimgray;
+    background-color: gold;
+    position: relative;
+    opacity: 0.8;
+}
+
 .MyTaken{
-     background-color: palegreen;  
+    background-color: palegreen;  
 }
 
 .MyShips{
@@ -320,7 +331,7 @@ button:hover {
 }
 
 button:disabled{
-    opacity: 60%;
+    opacity: 0.6;
 }
 
 .buttons{

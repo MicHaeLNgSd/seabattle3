@@ -358,6 +358,13 @@ function checkGameOver() {
 
         isGameOver = true
         restartBtn.classList.remove("invisible")
+
+        let shipGOVision = document.querySelectorAll('.computer-grid > .takenByShip')
+        shipGOVision.forEach(ship => {
+            if (!ship.classList.contains('boom')) {
+                ship.classList.add("takenGOVision");
+            }
+        });
     }
 }
 
