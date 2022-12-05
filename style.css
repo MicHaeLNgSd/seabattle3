@@ -248,14 +248,6 @@ button:hover {
     background-color: rebeccapurple;
 }
 
-.ship .ss {
-    -webkit-transition: -webkit-transform 250ms ease-out !important;
-    -moz-transition: -moz-transform 250ms ease-out !important;
-    -o-transition: -o-transform 250ms ease-out !important;
-    transition: transform 250ms ease-out !important;
-
-}
-
 .dead{
     background-color: red;
 }

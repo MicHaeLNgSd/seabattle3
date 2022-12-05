@@ -1,10 +1,7 @@
-// options are optional ;)
 MobileDragDrop.polyfill({
-    // use this to make use of the scroll behaviour
     dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
 });
-
-window.addEventListener('touchmove', function() {}, {passive: false});
+window.addEventListener('touchmove', function () { }, { passive: false });
 
 console.log("main.js is connected!)");
 const userGrid = document.querySelector('.user-grid')
