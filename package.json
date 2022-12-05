@@ -4,7 +4,7 @@
   "description": "KursovaDiplomna",
   "main": "main.js",
   "scripts": {
-    "start": "http-server"
+    "start": "http-server --port 8082"
   },
   "repository": {
     "type": "git",

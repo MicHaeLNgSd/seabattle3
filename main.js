@@ -1,3 +1,11 @@
+// options are optional ;)
+MobileDragDrop.polyfill({
+    // use this to make use of the scroll behaviour
+    dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
+});
+
+window.addEventListener('touchmove', function() {}, {passive: false});
+
 console.log("main.js is connected!)");
 const userGrid = document.querySelector('.user-grid')
 const computerGrid = document.querySelector('.computer-grid')
@@ -459,10 +467,10 @@ function dragDropFunc() {
         square.addEventListener('drop', dragDrop)
     });
 
-    ships.forEach(ship => ship.addEventListener('mousedown', (e) => {
+    ships.forEach(ship => ['touchstart', 'mousedown'].forEach(eventName => ship.addEventListener(eventName, (e) => {
         takingSectionId = parseInt(e.target.id.substr(-1))
         console.log("takingSection", takingSectionId)
-    }))
+    })))
 }
 
 function dragStart(e) {
@@ -501,9 +509,10 @@ function dragStart(e) {
 }
 
 function dragEnter(e) {
+    console.log('dragEnter');
     e.preventDefault();
     currentSquare = parseInt(this.dataset.y) * 10 + parseInt(this.dataset.x)
-    console.log("currentSquare", currentSquare)
+    // console.log("currentSquare", currentSquare)
 }
 
 // function dragLeave() {
@@ -511,20 +520,27 @@ function dragEnter(e) {
 // }
 
 function dragOver(e) {
+    console.log('dragOver');
     e.preventDefault();
 }
 
 function dragDrop(e) {
+    console.log('dragDrop', draggedShip);
     if (draggedShip !== undefined) {
         let step = (isHorizontal) ? 1 : 10;
 
+        console.log('isHorizontal', isHorizontal)
+
         if (isHorizontal) {
+            console.log(currentSquare, takingSectionId)
             let shipStartY = Math.floor((currentSquare - takingSectionId) / 10);
             let shipEndY = Math.floor((currentSquare - takingSectionId + draggedShipLength - 1) / 10);
             if (shipStartY !== shipEndY) {
                 return;
             }
         }
+
+        console.log('123')
 
         for (let i = currentSquare - takingSectionId * step; i < (currentSquare - (takingSectionId - draggedShipLength) * step); i += step) {
             if (userSquares[i].classList.contains("taken") || i > userSquares.length - 1) {
@@ -560,6 +576,7 @@ function dragDrop(e) {
 }
 
 function dragEnd() {
+    console.log('dragEnd');
     userSquares.forEach(square => {
         //square.className = ""
         square.classList.remove('MyTaken')
