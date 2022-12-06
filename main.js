@@ -179,14 +179,16 @@ function cleanBoardFromObj() {
     isHorizontal = true
 }
 
-function shipChecker() { //squares
+function shipChecker(squares) { //squares
+    sqSelector = (squares !== userSquares);
     for (let i = 1; i <= countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.add('ship-checker')
     }
 }
 
-function removeShipChecker() { //squares
+function removeShipChecker(squares) { //squares
+    sqSelector = (squares !== userSquares);
     for (let i = 1; i <= countShips; i++) {
         shipById = document.querySelector(`[id="${shipIdGenerator(sqSelector, i)}"]`)
         shipById.classList.remove('ship-checker')

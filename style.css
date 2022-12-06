@@ -64,7 +64,7 @@ section{
 .container{
     display: flex;
     flex-direction: column;
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
     height: max-content;
 }
 
@@ -83,7 +83,7 @@ section{
 .container-g{
     display: flex;
     flex-direction: row;
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
     height: max-content;
     margin: 30px;
 }
